@@ -7,6 +7,7 @@ load_dotenv()
 
 class ConfigSettings(BaseSettings):
     API_KEY: str
+    CP_SECRET: str
     DEFAULT_TOKENS_NEW: list[str] = [
         "DFI.Money (YFII)",
         "FIO Protocol (FIO)",

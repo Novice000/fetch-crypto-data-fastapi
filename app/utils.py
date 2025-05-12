@@ -1,12 +1,12 @@
 import aiohttp
 import asyncio
-from validators import TableFieldsAndTickers
+from .validators import TableFieldsAndTickers
 import io
 import pandas as pd
 import zipfile
 from fastapi.exceptions import HTTPException
 
-from config import get_settings
+from .config import get_settings
 
 SETTINGS = get_settings()
 api_key = SETTINGS.API_KEY

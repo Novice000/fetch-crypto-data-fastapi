@@ -1,11 +1,10 @@
-import io
 from fastapi import FastAPI, Query
 from fastapi.exceptions import HTTPException
 from fastapi.responses import Response
 import uvicorn
-from config import get_settings
-from validators import TableFieldsAndTickers
-from utils import (
+from .config import get_settings
+from .validators import TableFieldsAndTickers
+from .utils import (
     get_token_symbols,
     fetch_crypto_data,
     build_crypto_table,
@@ -27,7 +26,7 @@ async def root():
 @app.get("/api/data/download")
 async def get_data(filterParams: Annotated[TableFieldsAndTickers, Query()]):
     body = filterParams
-    if body.tickers == "cp#roqqu":
+    if body.tickers == SETTINGS.CP_SECRET:
         tickers = get_token_symbols(SETTINGS.TOKENS)
     elif body.tickers  == None:
         tickers = "BTC,ETH,PI"
@@ -51,4 +50,4 @@ async def get_data(filterParams: Annotated[TableFieldsAndTickers, Query()]):
 
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, log_level="info", reload=True)
+    uvicorn.run("app.main:app", host="0.0.0.0", port=8000, log_level="info", reload=True)
