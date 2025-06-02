@@ -2,9 +2,9 @@ from fastapi import FastAPI, Query
 from fastapi.exceptions import HTTPException
 from fastapi.responses import Response
 import uvicorn
-from .config import get_settings
-from .validators import TableFieldsAndTickers
-from .utils import (
+from app.config import get_settings
+from app.validators import TableFieldsAndTickers
+from app.utils import (
     get_token_symbols,
     fetch_crypto_data,
     build_crypto_table,
@@ -27,7 +27,7 @@ async def root():
 async def get_data(filterParams: Annotated[TableFieldsAndTickers, Query()]):
     body = filterParams
     if body.tickers == SETTINGS.CP_SECRET:
-        tickers = get_token_symbols(SETTINGS.TOKENS)
+        tickers = get_token_symbols(SETTINGS.DEFAULT_TOKENS_NEW) # type: ignore
     elif body.tickers  == None:
         tickers = "BTC,ETH,PI"
     else:
@@ -45,8 +45,10 @@ async def get_data(filterParams: Annotated[TableFieldsAndTickers, Query()]):
             media_type="application/zip",
             headers={"Content-Disposition": "attachment; filename=crypto_data.zip"},
         )
+    
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise 
+    # HTTPException(status_code=500, detail=str(e))
 
 
 if __name__ == "__main__":

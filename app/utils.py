@@ -1,10 +1,11 @@
 import aiohttp
 import asyncio
-from .validators import TableFieldsAndTickers
+from app.validators import TableFieldsAndTickers
 import io
 import pandas as pd
 import zipfile
 from fastapi.exceptions import HTTPException
+from pprint import pprint
 
 from .config import get_settings
 
@@ -59,7 +60,7 @@ def build_crypto_table(data, model: TableFieldsAndTickers = TableFieldsAndTicker
     field_dictionary = model.model_dump(exclude_none=True)
     for key in field_dictionary.keys():
         print(key)
-        if field_dictionary[key] != False:
+        if field_dictionary[key] != False and key != "tickers":
             if key == "supply_percent":
                 crypto_table["Supply %"] = []
             elif key == "volume_change_24h":
@@ -102,6 +103,8 @@ def build_crypto_table(data, model: TableFieldsAndTickers = TableFieldsAndTicker
             crypto_table["Supply %"].append(
             round((circ / total) * 100, 2) if total else "N/A"
         )
+    print("after for loop to build table")
+    pprint(crypto_table)
     return pd.DataFrame(crypto_table)
 
 
