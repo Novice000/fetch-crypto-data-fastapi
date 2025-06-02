@@ -18,7 +18,7 @@ SETTINGS = get_settings()
 app = FastAPI()
 
 
-@app.get("/")
+@app.api_route("/", methods=["GET", "HEAD"])
 async def root():
     return {"message": "Hello Crypto-head"}
 
