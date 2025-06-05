@@ -17,7 +17,6 @@ SETTINGS = get_settings()
 
 app = FastAPI()
 
-
 @app.api_route("/", methods=["GET", "HEAD"])
 async def root():
     return {"message": "Hello Crypto-head"}
@@ -27,25 +26,22 @@ async def root():
 async def get_data(filterParams: Annotated[TableFieldsAndTickers, Query()]):
     body = filterParams
     if body.tickers == SETTINGS.CP_SECRET:
-        tickers = get_token_symbols(SETTINGS.DEFAULT_TOKENS_NEW) # type: ignore
+        tickers = get_token_symbols(SETTINGS.DEFAULT_TOKENS_NEW)
     elif body.tickers  == None:
         tickers = "BTC,ETH,PI"
     else:
         tickers = body.tickers
     try:
         data = await fetch_crypto_data(tickers)
-        print("after fetching table")
         data = build_crypto_table(data, body)
-        print("after building table")
         zipfile = zip_csv_and_xlsx(data)
-        print("after zipping")
         return Response(
             # io.BytesIO(zipfile),
             content=zipfile,
             media_type="application/zip",
             headers={"Content-Disposition": "attachment; filename=crypto_data.zip"},
         )
-    
+
     except Exception as e:
         raise 
     # HTTPException(status_code=500, detail=str(e))

@@ -5,7 +5,6 @@ import io
 import pandas as pd
 import zipfile
 from fastapi.exceptions import HTTPException
-from pprint import pprint
 
 from .config import get_settings
 
@@ -41,7 +40,6 @@ async def fetch_crypto_data(symbols: str | list[str])-> dict:
         else:
             params = {"symbol": symbols}
         async with session.get(url, headers=headers, params=params) as response:
-            print(response.status)
             if response.status not in [200, 201]:
                raise HTTPException(
                    status_code=response.status,
@@ -59,7 +57,6 @@ def build_crypto_table(data, model: TableFieldsAndTickers = TableFieldsAndTicker
 
     field_dictionary = model.model_dump(exclude_none=True)
     for key in field_dictionary.keys():
-        print(key)
         if field_dictionary[key] != False and key != "tickers":
             if key == "supply_percent":
                 crypto_table["Supply %"] = []
@@ -69,10 +66,7 @@ def build_crypto_table(data, model: TableFieldsAndTickers = TableFieldsAndTicker
                 crypto_table["Volume(24h)"] = []
             else:
                 formated_key = key.replace("_", " ").title()
-                print(formated_key)
                 crypto_table[formated_key] = []
-
-    print("before for loop to build table")
     for crypto in data["data"].values():
         if not model.price and crypto.get("quote", {}).get("USD", {}).get("price"):
             continue
@@ -103,8 +97,6 @@ def build_crypto_table(data, model: TableFieldsAndTickers = TableFieldsAndTicker
             crypto_table["Supply %"].append(
             round((circ / total) * 100, 2) if total else "N/A"
         )
-    print("after for loop to build table")
-    pprint(crypto_table)
     return pd.DataFrame(crypto_table)
 
 
