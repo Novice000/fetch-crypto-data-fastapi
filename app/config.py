@@ -110,7 +110,7 @@ class ConfigSettings(BaseSettings):
         "Uniswap (UNI)",
         "Internet Computer (ICP)",
         "Pepe (PEPE)",
-        "Polygon (MATIC)",
+        "POL (POL)",
         "Litecoin (LTC)",
         "Near Protocol (NEAR)",
         "Chainlink (LINK)",
